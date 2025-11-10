@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Controle de Abastecimento',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Text("App Inicializado!"), // Vamos mudar isso na próxima etapa
+      home: Text("App Inicializado!"),
     );
   }
 }
