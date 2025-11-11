@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // Importe o arquivo gerado
+import 'auth_check.dart';
 
 void main() async {
-  // Garante que os Widgets do Flutter foram inicializados
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inicializa o Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -19,8 +15,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Controle de Abastecimento',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: Text("App Inicializado!"),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        useMaterial3: true,
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
+      ),
+      debugShowCheckedModeBanner: false,
+      // A TELA INICIAL AGORA É O NOSSO VERIFICADOR DE AUTENTICAÇÃO
+      home: const AuthCheck(),
     );
   }
 }

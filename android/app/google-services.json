@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1063232757535",
+    "project_id": "scav-a151e",
+    "storage_bucket": "scav-a151e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063232757535:android:1ac57e1cef25a4cad29a2a",
+        "android_client_info": {
+          "package_name": "com.example.scav"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZx1F4ct4dKCL2B4r_bDqW6II9aq3ArUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
