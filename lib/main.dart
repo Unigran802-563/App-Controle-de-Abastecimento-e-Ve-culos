@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+// lib/main.dart
+
 import 'package:firebase_core/firebase_core.dart';
-import 'auth_check.dart';
+import 'package:flutter/material.dart';
+import 'package:scav/auth_check.dart';
+import 'package:scav/core/app_theme.dart'; // Importa o nosso arquivo de tema
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,16 +17,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Controle de Abastecimento',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-        ),
-      ),
+      title: 'SCAV - Controle de Veículos',
+
+      // --- CONFIGURAÇÃO DO TEMA ---
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+
+      // Força o aplicativo a usar o tema escuro sempre
+      themeMode: ThemeMode.dark,
+
       debugShowCheckedModeBanner: false,
-      // A TELA INICIAL AGORA É O NOSSO VERIFICADOR DE AUTENTICAÇÃO
       home: const AuthCheck(),
     );
   }

@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:scav/screens/refills_history_screen.dart';
 import 'package:scav/screens/vehicles_screen.dart';
-import 'package:scav/services/auth_service.dart';
 import 'package:scav/screens/widgets/add_refill_form.dart';
+import 'package:scav/services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -17,11 +17,17 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blueAccent),
+          // Header agora usa as cores do tema
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
             child: Text(
               'Menu Principal',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                fontSize: 24,
+              ),
             ),
           ),
           ListTile(
@@ -34,13 +40,11 @@ class AppDrawer extends StatelessWidget {
               );
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.local_gas_station),
             title: const Text('Registrar Abastecimento'),
             onTap: () {
               Navigator.of(context).pop(); // Fecha o drawer primeiro
-              // Mostra o formulário em um diálogo
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -74,7 +78,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Sair'),
             onTap: () {
               authService.signOut();
-              Navigator.of(context).pop(); // Fecha o drawer
+              // Não precisa fechar o drawer aqui, pois o AuthCheck vai reconstruir a tela
             },
           ),
         ],
