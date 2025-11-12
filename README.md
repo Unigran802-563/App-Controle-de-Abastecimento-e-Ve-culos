@@ -36,7 +36,6 @@ As seguintes dependências foram adicionadas ao `pubspec.yaml` para construir o 
 *   `firebase_auth`: Para gerenciar a autenticação de usuários.
 *   `cloud_firestore`: Para interagir com o banco de dados NoSQL Firestore.
 *   `intl`: Utilizado para formatar datas nos gráficos e históricos.
-*   `fl_chart`: Biblioteca poderosa para a criação dos gráficos de estatísticas.
 
 ## ⚙️ Como Executar o Projeto
 
