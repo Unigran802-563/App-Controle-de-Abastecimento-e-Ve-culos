@@ -18,7 +18,7 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Meus Veículos')),
+      appBar: AppBar(title: const Text('Meus Veículos'), centerTitle: true),
       body: StreamBuilder<List<Vehicle>>(
         stream: _firestoreService.getVehicles(),
         builder: (context, snapshot) {
@@ -36,52 +36,79 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
             itemBuilder: (context, index) {
               final vehicle = vehicles[index];
               return ListTile(
+                leading: const Icon(Icons.directions_car, size: 40),
                 title: Text('${vehicle.marca} ${vehicle.modelo}'),
                 subtitle: Text('Placa: ${vehicle.placa} - Ano: ${vehicle.ano}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () async {
-                    // Confirmação antes de excluir
-                    final confirm = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Confirmar Exclusão'),
-                        content: const Text(
-                          'Tem certeza que deseja excluir este veículo?',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('Cancelar'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // --- BOTÃO DE EDITAR ---
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      tooltip: 'Editar',
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Editar Veículo'),
+                            content: AddVehicleForm(vehicleToEdit: vehicle),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('Cancelar'),
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text('Excluir'),
+                        );
+                      },
+                    ),
+                    // --- BOTÃO DE EXCLUIR ---
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: 'Excluir',
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Confirmar Exclusão'),
+                            content: const Text(
+                              'Tem certeza que deseja excluir este veículo?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text('Cancelar'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: const Text('Excluir'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
+                        );
 
-                    if (confirm == true) {
-                      await _firestoreService.deleteVehicle(vehicle.id);
-                    }
-                  },
-                ),
-              );
+                        if (confirm == true) {
+                          await _firestoreService.deleteVehicle(vehicle.id);
+                        }
+                      },
+                    ),
+                  ],
+                ), // Fim do Row
+              ); // Fim do ListTile
             },
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Mostra o formulário em um diálogo
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Adicionar Novo Veículo'),
               content:
-                  const AddVehicleForm(), // Nosso novo widget de formulário
+                  const AddVehicleForm(), // Para ADICIONAR, não passamos vehicleToEdit
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -91,6 +118,7 @@ class _VehiclesScreenState extends State<VehiclesScreen> {
             ),
           );
         },
+        tooltip: 'Adicionar Veículo',
         child: const Icon(Icons.add),
       ),
     );

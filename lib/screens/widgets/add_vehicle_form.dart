@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:scav/models/vehicle.dart';
 import 'package:scav/services/firestore_service.dart';
 
+// --- PARTE 1: O WIDGET EM SI ---
+// Ele só precisa saber se vai receber um veículo para editar.
 class AddVehicleForm extends StatefulWidget {
-  const AddVehicleForm({super.key});
+  final Vehicle? vehicleToEdit;
+
+  const AddVehicleForm({super.key, this.vehicleToEdit});
 
   @override
   State<AddVehicleForm> createState() => _AddVehicleFormState();
 }
 
+// --- PARTE 2: O ESTADO DO WIDGET ---
+// Toda a lógica, controladores e a aparência ficam aqui.
 class _AddVehicleFormState extends State<AddVehicleForm> {
   final _formKey = GlobalKey<FormState>();
   final _modeloController = TextEditingController();
@@ -20,6 +26,22 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
   final _tipoCombustivelController = TextEditingController();
 
   final FirestoreService _firestoreService = FirestoreService();
+
+  // O initState fica DENTRO da classe _AddVehicleFormState
+  @override
+  void initState() {
+    super.initState();
+    // Se estamos editando (se widget.vehicleToEdit não for nulo),
+    // preenchemos o formulário com os dados existentes.
+    if (widget.vehicleToEdit != null) {
+      final vehicle = widget.vehicleToEdit!;
+      _marcaController.text = vehicle.marca;
+      _modeloController.text = vehicle.modelo;
+      _placaController.text = vehicle.placa;
+      _anoController.text = vehicle.ano.toString();
+      _tipoCombustivelController.text = vehicle.tipoCombustivel;
+    }
+  }
 
   @override
   void dispose() {
@@ -31,21 +53,35 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
     super.dispose();
   }
 
+  // Função de submit atualizada para lidar com ADICIONAR e EDITAR
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final newVehicle = Vehicle(
-        id: '', // O ID será gerado pelo Firestore
-        modelo: _modeloController.text,
-        marca: _marcaController.text,
-        placa: _placaController.text,
-        ano: int.tryParse(_anoController.text) ?? 0,
-        tipoCombustivel: _tipoCombustivelController.text,
-      );
-
-      await _firestoreService.addVehicle(newVehicle);
+      // Verifica se estamos em modo de edição
+      if (widget.vehicleToEdit != null) {
+        final updatedVehicle = Vehicle(
+          id: widget.vehicleToEdit!.id, // USA O ID EXISTENTE
+          modelo: _modeloController.text,
+          marca: _marcaController.text,
+          placa: _placaController.text,
+          ano: int.tryParse(_anoController.text) ?? 0,
+          tipoCombustivel: _tipoCombustivelController.text,
+        );
+        await _firestoreService.updateVehicle(updatedVehicle);
+      } else {
+        // Se não, estamos em modo de adição
+        final newVehicle = Vehicle(
+          id: '', // ID vazio, será gerado pelo Firestore
+          modelo: _modeloController.text,
+          marca: _marcaController.text,
+          placa: _placaController.text,
+          ano: int.tryParse(_anoController.text) ?? 0,
+          tipoCombustivel: _tipoCombustivelController.text,
+        );
+        await _firestoreService.addVehicle(newVehicle);
+      }
 
       if (mounted) {
-        Navigator.of(context).pop(); // Fecha o diálogo após adicionar
+        Navigator.of(context).pop(); // Fecha o diálogo
       }
     }
   }
@@ -94,7 +130,12 @@ class _AddVehicleFormState extends State<AddVehicleForm> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitForm,
-              child: const Text('Salvar Veículo'),
+              // O texto do botão muda dependendo se estamos adicionando ou editando
+              child: Text(
+                widget.vehicleToEdit == null
+                    ? 'Salvar Veículo'
+                    : 'Atualizar Veículo',
+              ),
             ),
           ],
         ),
